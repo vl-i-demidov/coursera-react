@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import { Card, CardImg, CardText, CardBody, CardTitle, Breadcrumb, BreadcrumbItem,
-    Button, Modal, ModalHeader, ModalBody, Label, Row } from 'reactstrap';
+import {
+    Card, CardImg, CardText, CardBody, CardTitle, Breadcrumb, BreadcrumbItem,
+    Button, Modal, ModalHeader, ModalBody, Label, Row
+} from 'reactstrap';
 import { Link } from 'react-router-dom';
 import { LocalForm, Control, Errors } from "react-redux-form";
 
@@ -16,7 +18,7 @@ function RenderDish({ dish }) {
     );
 }
 
-function RenderComments({ comments }) {
+function RenderComments({ comments, addComment, dishId }) {
     if (comments != null) {
 
         const view = comments.map(c => {
@@ -34,7 +36,7 @@ function RenderComments({ comments }) {
                 <ul className="list-unstyled">
                     {view}
                 </ul>
-                <CommentForm />
+                <CommentForm dishId={dishId} addComment={addComment} />
             </div>
         );
     } else {
@@ -65,7 +67,7 @@ const DishDetail = (props) => {
                         <RenderDish dish={props.dish} />
                     </div>
                     <div className="col-12 col-md-5 m-1">
-                        <RenderComments comments={props.comments} />
+                        <RenderComments comments={props.comments} addComment={props.addComment} dishId={props.dish.id} />
                     </div>
                 </div>
             </div>
@@ -79,7 +81,7 @@ const DishDetail = (props) => {
 const maxLength = (len) => (val) => !(val) || (val.length <= len);
 const minLength = (len) => (val) => val && (val.length >= len);
 
-export class CommentForm extends Component {
+class CommentForm extends Component {
 
     constructor(props) {
         super(props);
@@ -99,7 +101,7 @@ export class CommentForm extends Component {
     }
 
     handleSubmit(values) {
-        alert(JSON.stringify(values));
+        this.props.addComment(this.props.dishId, values.rating, values.author, values.comment);
     }
 
     render() {
